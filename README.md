@@ -56,3 +56,31 @@ python train_ms.py -c configs/vctk_base.json -m vctk_base
 
 ## Inference Example
 See [inference.ipynb](inference.ipynb)
+
+----
+## 注意
+### 1.torch1.7 以下版本在Windows下进行分布式训练会报错：
+
+AttributeError: module ‘torch.distributed’ has no attribute ‘init_process_group’
+
+#### 报错原因：
+torch1.7 以下版本不支持Windows下的分布式训练，在Linux内核才不会报这个错。
+
+#### 解决办法：
+方法1：
+换成Linux系统运行代码。。。（要是没有条件直接看 方法2）
+
+方法2：
+1）、将Windows下的 torch 换成 1.7.0及以上的版本。（1.5~1.8 版本的 torch 代码基本都兼容）
+
+温馨提示：建议离线下载 torch1.7.1 版本，torchvision0.8.2 版本。
+
+###  2.如果用torch 1.7.1版本，windows对pytorch分布式计算支持有问题
+
+RunTimeError：No rendezvous handler for env://
+
+#### 报错原因：
+源于多GPU训练，而且windows对pytorch分布式计算支持不够
+
+#### 解决办法：
+尝试更新pytorch至1.8。（为了提高 NCCL 稳定性，PyTorch 1.8 将支持稳定的异步错误/超时处理；支持 RPC 分析。此外，还增加了对管道并行的支持，并可以通过 DDP 中的通讯钩子进行梯度压缩。）

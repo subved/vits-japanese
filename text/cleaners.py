@@ -16,7 +16,7 @@ import re
 from unidecode import unidecode
 import pyopenjtalk
 from janome.tokenizer import Tokenizer
-
+from phonemizer import phonemize
 
 # Regular expression matching whitespace:
 _whitespace_re = re.compile(r'\s+')
@@ -60,7 +60,8 @@ def expand_abbreviations(text):
   return text
 
 
-
+def expand_numbers(text):
+  return normalize_numbers(text)
 
 def lowercase(text):
   return text.lower()
@@ -201,3 +202,21 @@ def japanese_phrase_cleaners(text):
 
 
 
+def english_cleaners(text):
+  '''Pipeline for English text, including abbreviation expansion.'''
+  text = convert_to_ascii(text)
+  text = lowercase(text)
+  text = expand_abbreviations(text)
+  phonemes = phonemize(text, language='en-us', backend='espeak', strip=True)
+  phonemes = collapse_whitespace(phonemes)
+  return phonemes
+
+
+def english_cleaners2(text):
+  '''Pipeline for English text, including abbreviation expansion. + punctuation + stress'''
+  text = convert_to_ascii(text)
+  text = lowercase(text)
+  text = expand_abbreviations(text)
+  phonemes = phonemize(text, language='en-us', backend='espeak', strip=True, preserve_punctuation=True, with_stress=True)
+  phonemes = collapse_whitespace(phonemes)
+  return
